@@ -1,6 +1,4 @@
-package org.example;
-
-import org.example.Cars.*;
+import Cars.*;
 
 import java.util.ArrayList;
 import java.util.List;

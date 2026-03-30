@@ -1,4 +1,4 @@
-package org.example.Cars;
+package Cars;
 
 public abstract class Car {
     private final String brand;
