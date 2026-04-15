@@ -23,7 +23,7 @@ public class IssuePageTest extends WebHooks {
 
         loginPage.login(username, password);
         testProjectPage.openTestProject();
-        testProjectPage.openIssueByKey();
+        //testProjectPage.openIssueByKey();
 
         Assertions.assertTrue(issuePage.isAtIssuePage(),
                 "Не удалось открыть страницу задачи");

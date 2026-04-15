@@ -19,8 +19,6 @@ public class TestProjectPage {
             .as("Счетчик задач");
     private final SelenideElement searchInput = $x("//*[@id='quickSearchInput']")
             .as("Поле поиска");
-    private final SelenideElement searchResultItem = $x("//div[contains(@class, 'quicksearch-dropdown')]//span[contains(@class, 'quick-search-item-title') and text()='TestSeleniumATHomework']/ancestor::a")
-            .as("Результат поиска задачи");
 
     public void openTestProject() {
         projectsMenu.shouldBe(Condition.visible, Condition.enabled).click();
@@ -37,10 +35,16 @@ public class TestProjectPage {
         return Integer.parseInt(parts[1].trim());
     }
 
-    public void openIssueByKey() {
+    public void openIssueByKey(String issueName) {
         searchInput.shouldBe(Condition.visible).clear();
-        searchInput.setValue("TestSeleniumATHomework");
-        searchInput.shouldHave(Condition.value("TestSeleniumATHomework"));
+        searchInput.setValue(issueName);
+        searchInput.shouldHave(Condition.value(issueName));
+
+        // Динамический поиск результата по имени задачи
+        SelenideElement searchResultItem = $x(
+                "//div[contains(@class, 'quicksearch-dropdown')]//span[contains(@class, 'quick-search-item-title') and text()='" + issueName + "']/ancestor::a"
+        ).as("Результат поиска задачи: " + issueName);
+        
         searchResultItem.shouldBe(Condition.visible, Condition.enabled).click();
         Selenide.webdriver().shouldHave(WebDriverConditions.urlContaining("/browse/"));
     }
