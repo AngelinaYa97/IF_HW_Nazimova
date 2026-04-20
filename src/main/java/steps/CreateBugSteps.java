@@ -7,10 +7,9 @@ import ifellow.jira.ui.TestProjectPage;
 import io.cucumber.java.ru.И;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
+import org.junit.jupiter.api.Assertions;
 
 import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateBugSteps {
 
@@ -32,14 +31,14 @@ public class CreateBugSteps {
 
     @Тогда("баг создан успешно")
     public void verifyBugCreated() {
-        assertTrue(createBugPage.isIssueCreated(),
+        Assertions.assertTrue(createBugPage.isIssueCreated(),
                 "Баг не был создан успешно");
     }
 
     @И("я получаю ссылку на созданную задачу")
     public void saveCreatedIssueLink() {
         createdIssueLink = createBugPage.getCreatedIssueLink();
-        assertNotNull(createdIssueLink, "Нет ссылки на созданную задачу");
+        Assertions.assertNotNull(createdIssueLink, "Нет ссылки на созданную задачу");
     }
 
     @Когда("я открываю страницу созданной задачи")
@@ -49,14 +48,14 @@ public class CreateBugSteps {
 
     @Тогда("открылась страница созданной задачи")
     public void verifyAtCreatedIssuePage() {
-        assertTrue(issuePage.isAtIssuePage(),
+        Assertions.assertTrue(issuePage.isAtIssuePage(),
                 "Не открылась страница созданной задачи.");
     }
 
     @И("зафиксирован начальный статус задачи")
     public void rememberInitialStatus() {
         String initialStatus = issuePage.getIssueStatus();
-        assertNotNull(initialStatus, "Не удалось получить статус задачи");
+        Assertions.assertNotNull(initialStatus, "Не удалось получить статус задачи");
     }
 
     @Когда("я перевожу задачу в завершенный статус")
@@ -72,7 +71,7 @@ public class CreateBugSteps {
     @Тогда("статус задачи {string}")
     public void verifyIssueStatus(String expectedStatus) {
         String finalStatus = issuePage.getIssueStatus();
-        assertEquals(expectedStatus, finalStatus,
+        Assertions.assertEquals(expectedStatus, finalStatus,
                 "Задача не завершена. Статус: " + finalStatus);
 
     }

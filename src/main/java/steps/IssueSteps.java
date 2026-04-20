@@ -3,8 +3,8 @@ package steps;
 import io.cucumber.java.ru.И;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
+import org.junit.jupiter.api.Assertions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IssueSteps {
@@ -25,7 +25,7 @@ public class IssueSteps {
     @И("статус задачи равен {string}")
     public void verifyIssueStatus(String expectedStatus) {
         String actualStatus = context.issuePage.getIssueStatus();
-        assertEquals(expectedStatus, actualStatus,
+        Assertions.assertEquals(expectedStatus, actualStatus,
                 "Статус задачи не соответствует ожидаемому. " +
                         "Ожидается: '" + expectedStatus + "', Получено: '" + actualStatus + "'");
     }
@@ -33,7 +33,7 @@ public class IssueSteps {
     @И("поле {string} содержит {string}")
     public void verifyFieldContains(String fieldName, String expectedValue) {
         String actualFixVersions = context.issuePage.getFixVersions();
-        assertTrue(actualFixVersions.contains(expectedValue),
+        Assertions.assertTrue(actualFixVersions.contains(expectedValue),
                 "Версия в поле '" + fieldName + "' не соответствует ожидаемой. " +
                         "Ожидается: '" + expectedValue + "', Получено: '" + actualFixVersions + "'");
     }

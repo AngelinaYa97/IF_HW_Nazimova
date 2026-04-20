@@ -1,12 +1,10 @@
 package steps;
 
+import com.codeborne.selenide.Selenide;
 import config.ConfigReader;
 import io.cucumber.java.ru.Дано;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
-
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.webdriver;
 
 public class LoginSteps {
 
@@ -14,7 +12,7 @@ public class LoginSteps {
 
     @Дано("я открываю страницу авторизации")
     public void openLoginPage() {
-        open(ConfigReader.get("base.url"));
+        Selenide.open(ConfigReader.get("base.url"));
     }
 
     @Когда("я ввожу логин и пароль")
@@ -26,7 +24,7 @@ public class LoginSteps {
 
     @Тогда("URL страницы содержит {string}")
     public void verifyUrlContains(String expectedUrlPart) {
-        String currentUrl = webdriver().driver().url();
+        String currentUrl = Selenide.webdriver().driver().url();
         assert currentUrl.toLowerCase().contains(expectedUrlPart.toLowerCase()) :
                 "URL должен содержать '" + expectedUrlPart + "', но текущий URL: " + currentUrl;
     }

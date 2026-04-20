@@ -13,13 +13,13 @@ public class ConfigReader {
                 .getResourceAsStream("config.properties")) {
 
             if (input == null) {
-                throw new RuntimeException("файл config.properties не найден");
+                throw new RuntimeException("jj config.properties jj");
             }
 
             properties.load(input);
 
         } catch (Exception ex) {
-            throw new RuntimeException("ошибка загрузки файла config.properties", ex);
+            throw new RuntimeException("jjk config.properties", ex);
         }
     }
 

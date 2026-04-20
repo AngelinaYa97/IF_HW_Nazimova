@@ -1,11 +1,11 @@
 package steps;
 
+import com.codeborne.selenide.Selenide;
 import io.cucumber.java.ru.И;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
+import org.junit.jupiter.api.Assertions;
 
-import static com.codeborne.selenide.Selenide.webdriver;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestProjectSteps {
@@ -16,7 +16,7 @@ public class TestProjectSteps {
     @Тогда("я нахожусь на странице проекта {string}")
     public void verifyAtProjectPage(String projectName) {
         assertTrue(context.testProjectPage.isAtTestProject(),
-                "Проект " + projectName + " не открыт. Текущий URL: " + webdriver().driver().url());
+                "Проект " + projectName + " не открыт. Текущий URL: " + Selenide.webdriver().driver().url());
     }
 
     @Когда("зафиксировано текущее количество задач")
@@ -26,7 +26,7 @@ public class TestProjectSteps {
 
     @Тогда("количество задач больше 0")
     public void verifyIssueCountPositive() {
-        assertTrue(initialIssuesCount > 0,
+        Assertions.assertTrue(initialIssuesCount > 0,
                 "Количество задач должно быть положительным числом. Получено: " + initialIssuesCount);
     }
 
@@ -54,7 +54,7 @@ public class TestProjectSteps {
     @Тогда("количество задач увеличилось на 1")
     public void verifyIssueCountIncreasedByOne() {
         int finalIssuesCount = context.testProjectPage.getTotalIssuesCount();
-        assertEquals(initialIssuesCount + 1, finalIssuesCount,
+        Assertions.assertEquals(initialIssuesCount + 1, finalIssuesCount,
                 "Количество задач не увеличилось на 1. Было: " + initialIssuesCount +
                         ", Стало: " + finalIssuesCount);
     }
