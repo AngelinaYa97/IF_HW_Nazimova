@@ -3,7 +3,6 @@ package iffelow.jira.ui.ui;
 import config.ConfigReader;
 import ifellow.jira.ui.LoginPage;
 import iffelow.jira.ui.WebHooks;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +16,9 @@ public class LoginPageTest extends WebHooks {
         String username = ConfigReader.get("username");
         String password = ConfigReader.get("password");
 
-        loginPage.login(username, password);
-
-        String currentUrl = com.codeborne.selenide.Selenide.webdriver().driver().url();
-        Assertions.assertTrue(currentUrl.toLowerCase().contains("dashboard"),
-                "Авторизация не удалась: URL не содержит 'dashboard'");
+        loginPage.enterUsername(username);
+        loginPage.enterPassword(password);
+        loginPage.clickLoginButton();
+        loginPage.verifyLoginSuccess();
     }
 }

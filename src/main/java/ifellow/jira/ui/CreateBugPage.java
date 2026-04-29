@@ -3,11 +3,19 @@ package ifellow.jira.ui;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+
+import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.$x;
 
 public class CreateBugPage {
 
+    private final SelenideElement issueStatus = $x("//*[@id='status-val']").as("Статус задачи");
+    private final SelenideElement workflowButton = $x("//*[@id='opsbar-transitions_more']").as("Кнопка 'Бизнес-процесс'");
+    private final SelenideElement workflowDropdown = $x("//*[@id='opsbar-transitions_more_drop']").as("Выпадающее меню бизнес-процесса");
+    private final SelenideElement doneTransition = $x("//aui-item-link[@id='action_id_31']").as("Кнопка 'Выполнено'");
+    private final SelenideElement createIssueButton = $x("//*[@id='create_link']").as("Кнопка создания задачи");
     private final SelenideElement summaryField = $x("//*[@id='summary']").as("Поле 'Название'");
     private final SelenideElement descriptionField = $x("//*[@id='description-wiki-edit']").as("Поле 'Описание'");
     private final SelenideElement fixVersionsField = $x("//*[@id='fixVersions']").as("Поле 'Исправить в версиях'");
@@ -29,6 +37,7 @@ public class CreateBugPage {
     private final SelenideElement descriptionIframe = $x("//div[@field-id='description']//iframe").as("Iframe визуального редактора описания");
     private final SelenideElement environmentIframe = $x("//div[@field-id='environment']//iframe").as("Iframe визуального редактора окружения");
     private final SelenideElement body = $x("//body").as("Тело iframe");
+
     private final SelenideElement fixVersionsFirstOption = $x("//*[@id='fixVersions']//option[not(@value='-1')][1]").as("Первая опция версий");
     private final SelenideElement priorityFirstOption = $x("//*[@id='priority-suggestions']//li[1]").as("Первая опция приоритета");
     private final SelenideElement versionsFirstOption = $x("//*[@id='versions']//option[not(@value='-1')][1]").as("Первая опция затронутых версий");
@@ -39,118 +48,135 @@ public class CreateBugPage {
     private final SelenideElement epicLinkFirstOption = $x("//*[@id='customfield_10100-suggestions']//h5[text()='Предложения']/following-sibling::ul//li[1]").as("Первая опция эпика");
     private final SelenideElement sprintFirstOption = $x("//*[@id='customfield_10104-suggestions']//h5[text()='Предложения']/following-sibling::ul//li[1]").as("Первая опция спринта");
 
+    // Конструктор по умолчанию
+    public CreateBugPage() {}
+    @Step("Нажать кнопку создания задачи")
+    public void clickCreateIssue() {
+        createIssueButton.click();
+    }
+
+    // Шаги заполнения
+    @Step("Заполнить поле 'Название'")
     public void setSummary() {
         summaryField.shouldBe(Condition.visible).clear();
         summaryField.setValue("Тестовый баг");
-        summaryField.shouldHave(Condition.value("Тестовый баг"));
     }
 
+    @Step("Заполнить поле 'Описание'")
     public void setDescription() {
-        scrollToElement(descriptionField);
+        descriptionField.scrollTo();
         ensureVisualEditor(descriptionVisualTab);
-
         Selenide.switchTo().frame(descriptionIframe);
-        body.shouldBe(Condition.visible);
-        body.setValue("Автотест создал этот баг");
+        body.shouldBe(Condition.visible).setValue("Автотест создал этот баг");
         Selenide.switchTo().defaultContent();
     }
 
+    @Step("Заполнить поле 'Окружение'")
     public void setEnvironment() {
-        scrollToElement(environmentField);
+        environmentField.scrollTo();
         ensureVisualEditor(environmentVisualTab);
-
         Selenide.switchTo().frame(environmentIframe);
-        body.shouldBe(Condition.visible);
-        body.setValue("Тестовое окружение");
+        body.shouldBe(Condition.visible).setValue("Тестовое окружение");
         Selenide.switchTo().defaultContent();
     }
 
-    private void scrollToElement(SelenideElement element) {
-        element.shouldBe(Condition.visible);
-        element.scrollTo();
+    @Step("Выбрать 'Исправить в версиях'")
+    public void setFixVersions() {
+        fixVersionsField.scrollTo();
+        fixVersionsField.click();
+        fixVersionsFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
     }
 
-    private void ensureVisualEditor(SelenideElement visualTab) {
-        if (visualTab.is(Condition.visible) && !"true".equals(visualTab.getAttribute("aria-pressed"))) {
-            visualTab.click();
-            visualTab.shouldHave(Condition.attribute("aria-pressed", "true"));
-        }
+    @Step("Выбрать приоритет")
+    public void setPriority() {
+        priorityField.scrollTo();
+        priorityField.click();
+        priorityFirstOption.click();
     }
 
+    @Step("Заполнить метки")
+    public void setLabels() {
+        labelsField.scrollTo();
+        labelsField.clear();
+        labelsField.setValue("test-label");
+    }
+
+    @Step("Выбрать затронутые версии")
+    public void setVersions() {
+        versionsField.scrollTo();
+        versionsField.click();
+        versionsFirstOption.click();
+    }
+
+    @Step("Выбрать исполнителя")
+    public void setAssignee() {
+        assigneeField.scrollTo();
+        assigneeField.click();
+        assigneeFirstOption.click();
+    }
+
+    @Step("Выбрать Severity")
+    public void setSeverity() {
+        severityField.scrollTo();
+        severityField.click();
+        severitySecondOption.click();
+    }
+
+    @Step("Установить связанную задачу")
+    public void setIssueLink() {
+        issueLinkTypeField.scrollTo();
+        issueLinkTypeField.click();
+        issueLinkTypeFirstOption.click();
+
+        issueLinkField.scrollTo();
+        issueLinkField.click();
+        issueLinkField.setValue("test");
+        issueLinkFirstOption.click();
+    }
+
+    @Step("Установить ссылку на эпик")
+    public void setEpicLink() {
+        epicLinkField.scrollTo();
+        epicLinkField.click();
+        epicLinkFirstOption.click();
+    }
+
+    @Step("Установить спринт")
+    public void setSprint() {
+        sprintField.scrollTo();
+        sprintField.click();
+        sprintFirstOption.click();
+    }
+
+    @Step("Нажать кнопку 'Создать'")
     public void submitIssue() {
-        scrollToElement(submitButton);
-        submitButton.shouldBe(Condition.visible, Condition.enabled).click();
+        submitButton.scrollTo();
+        submitButton.click();
     }
 
-    public boolean isIssueCreated() {
-        return successMessage.shouldBe(Condition.visible).isDisplayed();
+    @Step("Проверить, что задача создана")
+    public void verifyIssueCreated() {
+        successMessage.shouldBe(Condition.visible, Condition.enabled);
     }
 
+    @Step("Получить ссылку на созданную задачу")
     public String getCreatedIssueLink() {
         return createdIssueLink.shouldBe(Condition.visible).getAttribute("href");
     }
 
-    public void setFixVersions() {
-        scrollToElement(fixVersionsField);
-        fixVersionsField.shouldBe(Condition.visible).click();
-        fixVersionsFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
+    @Step("Перевести задачу в статус 'Выполнено'")
+    public void completeIssue() {
+        workflowButton.shouldBe(Condition.visible, Condition.enabled).click();
+        workflowDropdown.shouldBe(Condition.visible, Duration.ofSeconds(10));
+        doneTransition.shouldBe(Condition.visible, Condition.enabled).click();
     }
 
-    public void setPriority() {
-        scrollToElement(priorityField);
-        priorityField.shouldBe(Condition.visible).click();
-        priorityFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
+    @Step("Проверить, что статус задачи изменился на '{expectedStatus}'")
+    public void waitForStatusChange(String expectedStatus, Duration timeout) {
+        issueStatus.shouldHave(Condition.text(expectedStatus), timeout);
     }
 
-    public void setLabels() {
-        scrollToElement(labelsField);
-        labelsField.shouldBe(Condition.visible).clear();
-        labelsField.setValue("test-label");
-        labelsField.shouldHave(Condition.value("test-label"));
-    }
-
-    public void setVersions() {
-        scrollToElement(versionsField);
-        versionsField.shouldBe(Condition.visible).click();
-        versionsFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
-    }
-
-    public void setAssignee() {
-        scrollToElement(assigneeField);
-        assigneeField.shouldBe(Condition.visible).click();
-        assigneeFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
-    }
-
-    public void setSeverity() {
-        scrollToElement(severityField);
-        severityField.shouldBe(Condition.visible).click();
-        severitySecondOption.shouldBe(Condition.visible, Condition.enabled).click();
-    }
-
-    public void setIssueLink() {
-        scrollToElement(issueLinkTypeField);
-        issueLinkTypeField.shouldBe(Condition.visible).click();
-        issueLinkTypeFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
-
-        scrollToElement(issueLinkField);
-        issueLinkField.shouldBe(Condition.visible).click();
-        issueLinkField.setValue("test");
-        issueLinkField.shouldHave(Condition.value("test"));
-        issueLinkFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
-    }
-
-    public void setEpicLink() {
-        scrollToElement(epicLinkField);
-        epicLinkField.shouldBe(Condition.visible).click();
-        epicLinkFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
-    }
-
-    public void setSprint() {
-        scrollToElement(sprintField);
-        sprintField.shouldBe(Condition.visible).click();
-        sprintFirstOption.shouldBe(Condition.visible, Condition.enabled).click();
-    }
-
+    @Step("Создать баг (заполнить все поля и отправить)")
     public void createBug() {
         setSummary();
         setDescription();
@@ -165,5 +191,13 @@ public class CreateBugPage {
         setAssignee();
         setSeverity();
         submitIssue();
+        verifyIssueCreated();
+    }
+
+    private void ensureVisualEditor(SelenideElement visualTab) {
+        if (visualTab.is(Condition.visible) && !"true".equals(visualTab.getAttribute("aria-pressed"))) {
+            visualTab.click();
+            visualTab.shouldHave(Condition.attribute("aria-pressed", "true"));
+        }
     }
 }

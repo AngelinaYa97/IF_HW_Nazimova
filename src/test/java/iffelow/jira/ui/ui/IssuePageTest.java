@@ -20,22 +20,20 @@ public class IssuePageTest extends WebHooks {
     void checkIssueStatusAndVersionTest() {
         String username = ConfigReader.get("username");
         String password = ConfigReader.get("password");
+        String issueKey = "TestSeleniumATHomework";
 
         loginPage.login(username, password);
         testProjectPage.openTestProject();
-        testProjectPage.openIssueByKey();
+        issuePage.openIssueByKey(issueKey);   // поиск по названию
 
-        Assertions.assertTrue(issuePage.isAtIssuePage(),
-                "Не удалось открыть страницу задачи");
-
+        issuePage.shouldBeAtIssuePage();      // проверка, что страница задачи открыта
+        issuePage.shouldHaveStatusToDo();
+        issuePage.shouldHaveFixVersion();
         String actualStatus = issuePage.getIssueStatus();
-        Assertions.assertEquals("СДЕЛАТЬ", actualStatus,
-                "Статус задачи не соответствует ожидаемому. " +
-                        "Ожидается: 'СДЕЛАТЬ', Получено: '" + actualStatus + "'");
+        Assertions.assertEquals("СДЕЛАТЬ", actualStatus, "Статус задачи не соответствует ожидаемому");
 
         String actualFixVersions = issuePage.getFixVersions();
         Assertions.assertTrue(actualFixVersions.contains("Version 2.0"),
-                "Версия в поле 'Исправить в версиях' не соответствует ожидаемой. " +
-                        "Ожидается: 'Version 2.0', Получено: '" + actualFixVersions + "'");
+                "Версия в поле 'Исправить в версиях' не соответствует ожидаемой");
     }
 }

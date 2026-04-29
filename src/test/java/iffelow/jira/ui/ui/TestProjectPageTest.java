@@ -4,6 +4,7 @@ import config.ConfigReader;
 import ifellow.jira.ui.CreateBugPage;
 import ifellow.jira.ui.LoginPage;
 import ifellow.jira.ui.TestProjectPage;
+
 import iffelow.jira.ui.WebHooks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,7 @@ public class TestProjectPageTest extends WebHooks {
     private final CreateBugPage createBugPage = new CreateBugPage();
 
     @Test
-    @DisplayName("Проверка счетчика задач")
+    @DisplayName("Проверка счетчика задач после создания новой задачи")
     void openTestProjectAndCheckCounterTest() {
         String username = ConfigReader.get("username");
         String password = ConfigReader.get("password");
@@ -24,27 +25,17 @@ public class TestProjectPageTest extends WebHooks {
         loginPage.login(username, password);
         testProjectPage.openTestProject();
 
-        Assertions.assertTrue(testProjectPage.isAtTestProject(),
-                "Проект Test не открыт. Текущий URL: " + com.codeborne.selenide.Selenide.webdriver().driver().url());
+        Assertions.assertTrue(testProjectPage.isAtTestProject(), "Проект Test не открыт");
 
         int initialIssuesCount = testProjectPage.getTotalIssuesCount();
-        Assertions.assertTrue(initialIssuesCount > 0,
-                "Количество задач должно быть положительным числом. Получено: " + initialIssuesCount);
+        Assertions.assertTrue(initialIssuesCount > 0, "Количество задач должно быть положительным");
 
         testProjectPage.clickCreateIssue();
-        createBugPage.createBug();
-
-        Assertions.assertTrue(createBugPage.isIssueCreated(),
-                "Задача не была создана");
+        testProjectPage.createBug();
 
         testProjectPage.openTestProject();
-        Assertions.assertTrue(testProjectPage.isAtTestProject(),
-                "Не удалось вернуться в проект Test");
+        Assertions.assertTrue(testProjectPage.isAtTestProject(), "Не удалось вернуться в проект Test");
 
-        int finalIssuesCount = testProjectPage.getTotalIssuesCount();
-        Assertions.assertEquals(initialIssuesCount + 1, finalIssuesCount,
-                "Количество задач не увеличилось на 1 после создания задачи. " +
-                        "Было: " + initialIssuesCount + ", Стало: " + finalIssuesCount);
-
+        testProjectPage.verifyIssuesCountIncreasedByOne(initialIssuesCount);
     }
 }

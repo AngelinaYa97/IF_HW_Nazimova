@@ -3,49 +3,51 @@ package ifellow.jira.ui;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverConditions;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selenide.$x;
 
 public class TestProjectPage {
+    private final CreateBugPage createBugPage = new CreateBugPage();
+    private final SelenideElement projectsMenu = $x("//*[@id='browse_link']").as("Меню 'Проекты'");
+    private final SelenideElement testProject = $x("//*[@id='admin_main_proj_link_lnk']").as("Проект Test");
+    private final SelenideElement createIssueButton = $x("//*[@id='create_link']").as("Кнопка создания задачи");
+    private final SelenideElement issueCounter = $x("//div[@class='showing']/span").as("Счетчик задач");
 
-    private final SelenideElement projectsMenu = $x("//*[@id='browse_link']")
-            .as("Меню 'Проекты'");
-    private final SelenideElement testProject = $x("//*[@id='admin_main_proj_link_lnk']")
-            .as("Проект Test");
-    private final SelenideElement createIssueButton = $x("//*[@id='create_link']")
-            .as("Кнопка создания задачи");
-    private final SelenideElement issueCounter = $x("//div[@class='showing']/span")
-            .as("Счетчик задач");
-    private final SelenideElement searchInput = $x("//*[@id='quickSearchInput']")
-            .as("Поле поиска");
-    private final SelenideElement searchResultItem = $x("//div[contains(@class, 'quicksearch-dropdown')]//span[contains(@class, 'quick-search-item-title') and text()='TestSeleniumATHomework']/ancestor::a")
-            .as("Результат поиска задачи");
-
+    @Step("Открыть проект Test")
     public void openTestProject() {
-        projectsMenu.shouldBe(Condition.visible, Condition.enabled).click();
-        testProject.shouldBe(Condition.visible, Condition.enabled).click();
+        projectsMenu.click();
+        testProject.click();
     }
 
+    @Step("Проверить, что открыт проект Test")
     public boolean isAtTestProject() {
         return Selenide.webdriver().driver().url().contains("TEST");
     }
 
+    @Step("Получить общее количество задач в проекте")
     public int getTotalIssuesCount() {
         String counterText = issueCounter.shouldBe(Condition.visible).getText();
         String[] parts = counterText.split("из");
         return Integer.parseInt(parts[1].trim());
     }
 
-    public void openIssueByKey() {
-        searchInput.shouldBe(Condition.visible).clear();
-        searchInput.setValue("TestSeleniumATHomework");
-        searchInput.shouldHave(Condition.value("TestSeleniumATHomework"));
-        searchResultItem.shouldBe(Condition.visible, Condition.enabled).click();
-        Selenide.webdriver().shouldHave(WebDriverConditions.urlContaining("/browse/"));
+    @Step("Нажать кнопку создания задачи")
+    public void clickCreateIssue() {
+        createIssueButton.click();
+    }
+    @Step("Создать баг (заполнить все поля и отправить)")
+    public void createBug(){
+        createBugPage.createBug();
     }
 
-    public void clickCreateIssue() {
-        createIssueButton.shouldBe(Condition.visible, Condition.enabled).click();
+    @Step("Проверить, что количество задач увеличилось на 1 (было {initialCount})")
+    public void verifyIssuesCountIncreasedByOne(int initialCount) {
+        int finalCount = getTotalIssuesCount();
+        int actualIncrease = finalCount - initialCount;
+        if (actualIncrease != 1) {
+            throw new AssertionError("Количество задач не увеличилось на 1. " +
+                    "Было: " + initialCount + ", Стало: " + finalCount + ", Увеличение: " + actualIncrease);
+        }
     }
 }

@@ -1,0 +1,15 @@
+# Maven
+target/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Allure
+allure-results/
+allure-report/
+.allure/
+
+# Logs / system
+*.log
