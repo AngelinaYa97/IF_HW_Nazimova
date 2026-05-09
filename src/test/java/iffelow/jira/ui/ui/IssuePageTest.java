@@ -8,6 +8,8 @@ import iffelow.jira.ui.WebHooks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IssuePageTest extends WebHooks {
 
@@ -24,16 +26,16 @@ public class IssuePageTest extends WebHooks {
 
         loginPage.login(username, password);
         testProjectPage.openTestProject();
-        issuePage.openIssueByKey(issueKey);   // поиск по названию
-
-        issuePage.shouldBeAtIssuePage();      // проверка, что страница задачи открыта
-        issuePage.shouldHaveStatusToDo();
-        issuePage.shouldHaveFixVersion();
+        issuePage.openIssueByKey(issueKey);
+        issuePage.shouldBeAtIssuePage();
         String actualStatus = issuePage.getIssueStatus();
         Assertions.assertEquals("СДЕЛАТЬ", actualStatus, "Статус задачи не соответствует ожидаемому");
-
+        issuePage.shouldHaveStatusToDo();
         String actualFixVersions = issuePage.getFixVersions();
         Assertions.assertTrue(actualFixVersions.contains("Version 2.0"),
                 "Версия в поле 'Исправить в версиях' не соответствует ожидаемой");
+        issuePage.shouldHaveFixVersion();
+
+
     }
 }

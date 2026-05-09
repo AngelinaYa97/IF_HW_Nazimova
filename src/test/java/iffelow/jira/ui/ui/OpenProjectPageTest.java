@@ -1,6 +1,5 @@
 package iffelow.jira.ui.ui;
 
-import com.codeborne.selenide.Selenide;
 import config.ConfigReader;
 import ifellow.jira.ui.LoginPage;
 import ifellow.jira.ui.OpenProjectPage;
@@ -24,7 +23,6 @@ public class OpenProjectPageTest extends WebHooks {
         loginPage.login(username, password);
         openProjectPage.openProjectMenu();
         openProjectPage.selectTestProject();
-
         openProjectPage.verifyProjectPageOpened();
         String currentUrl = com.codeborne.selenide.Selenide.webdriver().driver().url();
         Assertions.assertTrue(currentUrl.contains("TEST"),

@@ -18,10 +18,7 @@ public class IssuePage {
     @Step("Выполнить поиск задачи {issueKey}")
     public void openIssueByKey(String issueKey) {
         searchInput.shouldBe(Condition.visible).clear();
-        searchInput.setValue(issueKey);
-        SelenideElement searchResultItem = $x(String.format("//div[contains(@class, 'quicksearch-dropdown')]//span[contains(@class, 'quick-search-item-title') and text()='%s']/ancestor::a", issueKey))
-                .as("Результат поиска задачи " + issueKey);
-        searchResultItem.shouldBe(Condition.visible, Condition.enabled).click();
+        searchInput.setValue(issueKey).pressEnter();
         Selenide.webdriver().shouldHave(WebDriverConditions.urlContaining("/browse/"));
     }
 
@@ -30,7 +27,7 @@ public class IssuePage {
         Selenide.webdriver().shouldHave(WebDriverConditions.urlContaining("/browse/"));
     }
 
-    @Step("Получить статус задачи")
+    @Step("Получить текущий статус задачи")
     public String getIssueStatus() {
         return issueStatus.shouldBe(Condition.visible).getText().trim();
     }
@@ -38,7 +35,7 @@ public class IssuePage {
     public void shouldHaveStatusToDo() {
         issueStatus.shouldHave(Condition.text("СДЕЛАТЬ"));
     }
-    @Step("Получить версию исправления")
+    @Step("Получить текущую версию исправления")
     public String getFixVersions() {
         return fixVersionsField.shouldBe(Condition.visible).getText().trim();
     }

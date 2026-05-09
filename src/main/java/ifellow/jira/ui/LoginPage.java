@@ -1,12 +1,15 @@
 package ifellow.jira.ui;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverConditions;
+import io.qameta.allure.Param;
 import io.qameta.allure.Step;
-
+import io.qameta.allure.model.Parameter;
 
 import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.SetValueOptions.withText;
 
 public class LoginPage {
 
@@ -17,14 +20,15 @@ public class LoginPage {
     private final SelenideElement loginButton = $x("//input[@id='login']")
             .as("Кнопка входа");
 
-    @Step("Ввести логин пользователя {username}")
+    @Step("Ввести логин пользователя")
     public void enterUsername(String username) {
         usernameField.setValue(username);
     }
 
-    @Step("Ввести пароль пользователя {password}")
-    public void enterPassword(String password) {
-        passwordField.setValue(password);
+    @Step("Ввести пароль")
+    public void enterPassword(@Param(mode = Parameter.Mode.MASKED) String password) {
+        passwordField.shouldBe(Condition.visible)
+                .setValue(withText(password).sensitive());
     }
 
     @Step("Нажать на кнопку \"Вход\"")

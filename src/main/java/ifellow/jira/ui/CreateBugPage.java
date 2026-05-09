@@ -48,14 +48,13 @@ public class CreateBugPage {
     private final SelenideElement epicLinkFirstOption = $x("//*[@id='customfield_10100-suggestions']//h5[text()='Предложения']/following-sibling::ul//li[1]").as("Первая опция эпика");
     private final SelenideElement sprintFirstOption = $x("//*[@id='customfield_10104-suggestions']//h5[text()='Предложения']/following-sibling::ul//li[1]").as("Первая опция спринта");
 
-    // Конструктор по умолчанию
     public CreateBugPage() {}
     @Step("Нажать кнопку создания задачи")
     public void clickCreateIssue() {
         createIssueButton.click();
     }
 
-    // Шаги заполнения
+
     @Step("Заполнить поле 'Название'")
     public void setSummary() {
         summaryField.shouldBe(Condition.visible).clear();
@@ -127,7 +126,6 @@ public class CreateBugPage {
         issueLinkTypeField.scrollTo();
         issueLinkTypeField.click();
         issueLinkTypeFirstOption.click();
-
         issueLinkField.scrollTo();
         issueLinkField.click();
         issueLinkField.setValue("test");

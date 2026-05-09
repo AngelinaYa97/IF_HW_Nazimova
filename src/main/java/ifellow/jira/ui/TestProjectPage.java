@@ -36,7 +36,7 @@ public class TestProjectPage {
     public void clickCreateIssue() {
         createIssueButton.click();
     }
-    @Step("Создать баг (заполнить все поля и отправить)")
+
     public void createBug(){
         createBugPage.createBug();
     }

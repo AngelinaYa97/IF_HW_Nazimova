@@ -27,15 +27,12 @@ public class CreateBugPageTest extends WebHooks {
 
         loginPage.login(username, password);
         testProjectPage.openTestProject();
-
-        createBugPage.clickCreateIssue();   // шаг нажатия на кнопку
-        createBugPage.createBug();            // заполнение и отправка
-
+        createBugPage.clickCreateIssue();
+        createBugPage.createBug();
         String createdIssueLink = createBugPage.getCreatedIssueLink();
         if (createdIssueLink == null) {
             throw new AssertionError("Ссылка на созданную задачу не получена");
         }
-
         Selenide.open(createdIssueLink);
         issuePage.shouldBeAtIssuePage();
 
@@ -46,10 +43,5 @@ public class CreateBugPageTest extends WebHooks {
 
         createBugPage.completeIssue();
         createBugPage.waitForStatusChange("ГОТОВО", Duration.ofSeconds(15));
-
-        String finalStatus = issuePage.getIssueStatus();
-        if (!"ГОТОВО".equals(finalStatus)) {
-            throw new AssertionError("Задача не завершена. Статус: " + finalStatus);
-        }
     }
 }

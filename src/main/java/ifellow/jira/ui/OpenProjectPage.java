@@ -20,8 +20,8 @@ public class OpenProjectPage {
     @Step("Выбрать проект 'Test' в меню")
     public void selectTestProject() {
         testProject.click();
-
     }
+
     @Step("Проверить, что открыта страница проекта Test")
     public void verifyProjectPageOpened() {
         Selenide.webdriver().shouldHave(WebDriverConditions.urlContaining("TEST"));
